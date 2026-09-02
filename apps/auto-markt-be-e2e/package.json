@@ -1,0 +1,26 @@
+{
+  "name": "@org/auto-markt-be-e2e",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "implicitDependencies": [
+      "@org/auto-markt-be"
+    ],
+    "targets": {
+      "e2e": {
+        "executor": "@nx/jest:jest",
+        "outputs": [
+          "{projectRoot}/test-output/jest/coverage"
+        ],
+        "dependsOn": [
+          "@org/auto-markt-be:build",
+          "@org/auto-markt-be:serve"
+        ],
+        "options": {
+          "jestConfig": "apps/auto-markt-be-e2e/jest.config.cts",
+          "passWithNoTests": true
+        }
+      }
+    }
+  }
+}
