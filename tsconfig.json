@@ -8,6 +8,9 @@
     },
     {
       "path": "./apps/auto-markt-be"
+    },
+    {
+      "path": "./libs/backend/shared/database"
     }
   ],
   "compilerOptions": {}

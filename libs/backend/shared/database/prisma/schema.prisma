@@ -1,0 +1,34 @@
+// Single Source of Truth fuer das Datenbankschema.
+// Aenderungen hier -> `npm run db:migrate` -> versionierte SQL-Migration.
+// Doku: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+
+  // Prisma 7 verlangt einen expliziten Output-Pfad und erzeugt TypeScript-
+  // Quelltext (kein vorkompiliertes JS). Der Pfad ist relativ zu diesem
+  // Schema-Verzeichnis und muss innerhalb von `src` liegen, weil
+  // tsconfig.lib.json `rootDir: "src"` setzt.
+  output = "../src/generated/prisma"
+
+  runtime      = "nodejs"
+  // Explizit gesetzt: der Backend-Build ist ein CommonJS-Webpack-Bundle und
+  // nirgends im Workspace steht `"type": "module"`. Ohne die Angabe wuerde der
+  // Generator anhand von tsconfig `module: nodenext` raten.
+  moduleFormat        = "cjs"
+  importFileExtension = ""
+}
+
+datasource db {
+  // In Prisma 7 gehoert die URL NICHT mehr hierher, sondern nach
+  // prisma7.config.ts bzw. zur Laufzeit in den Driver Adapter.
+  provider = "postgresql"
+}
+
+/// Wegwerf-Modell, das ausschliesslich die Kette generate -> migrate -> query
+/// beweist. Wird durch die echten Domain-Modelle ersetzt, sobald die
+/// Fachlichkeit modelliert wird (siehe /ddd-new-domain).
+model HealthCheck {
+  id        String   @id @default(uuid())
+  checkedAt DateTime @default(now())
+}

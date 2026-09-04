@@ -11,6 +11,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
+  // Ohne Shutdown-Hooks laeuft onModuleDestroy nie -- die Prisma-Verbindung
+  // wuerde beim Beenden nicht sauber geschlossen.
+  app.enableShutdownHooks();
   const port = process.env.PORT || 3000;
   await app.listen(port);
   Logger.log(

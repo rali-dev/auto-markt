@@ -49,3 +49,11 @@ Thumbs.db
 .nx/self-healing
 .nx/migrate-runs
 test-output
+
+# environment
+.env
+.env.*
+!.env.example
+
+# prisma generated client (wird aus schema.prisma erzeugt)
+libs/backend/shared/database/src/generated
