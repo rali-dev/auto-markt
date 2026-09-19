@@ -11,7 +11,7 @@ generator client {
   // tsconfig.lib.json `rootDir: "src"` setzt.
   output = "../src/generated/prisma"
 
-  runtime      = "nodejs"
+  runtime             = "nodejs"
   // Explizit gesetzt: der Backend-Build ist ein CommonJS-Webpack-Bundle und
   // nirgends im Workspace steht `"type": "module"`. Ohne die Angabe wuerde der
   // Generator anhand von tsconfig `module: nodenext` raten.
@@ -32,3 +32,44 @@ model HealthCheck {
   id        String   @id @default(uuid())
   checkedAt DateTime @default(now())
 }
+
+model Product {
+  id            String      @id @default(uuid())
+  name          String
+  description   String
+  price         Float
+  image         String
+  stripePriceId String
+  isFeatured    Boolean     @default(false)
+  orderItems    OrderItem[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Order {
+  id          String      @id @default(uuid())
+  userId      String? // Firebase Auth UID (optional for guest orders)
+  status      OrderStatus @default(PENDING)
+  totalAmount Float
+  paymentId   String?
+  items       OrderItem[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Float
+  order     Order   @relation(fields: [orderId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
+} 
+
+enum OrderStatus {
+  PENDING
+  STARTED_DELIVERY
+  DELIVERED
+}
+
