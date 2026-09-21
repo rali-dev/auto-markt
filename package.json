@@ -61,6 +61,8 @@
     "rxjs": "^7.8.0"
   },
   "overrides": {
+    "@emnapi/core": "1.4.5",
+    "@emnapi/runtime": "1.4.5",
     "prisma": "7.10.0",
     "mysql2": "3.24.3",
     "deepmerge-ts": "^8.0.0",
