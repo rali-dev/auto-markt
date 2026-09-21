@@ -13,6 +13,18 @@ permissions:
 jobs:
   main:
     runs-on: ubuntu-latest
+    env:
+      # Der PrismaService liest DATABASE_URL per getOrThrow und bricht den Boot
+      # ab, wenn sie fehlt. Die .env liegt zu Recht nicht im Repository, also
+      # muss der Runner den Wert stellen -- sonst startet die App nicht und der
+      # e2e-Test laeuft in den waitForPortOpen-Timeout.
+      #
+      # Bewusst ein Platzhalter statt eines Secrets: Der e2e-Test ruft nur
+      # GET /api und fasst die Datenbank nicht an. Der pg-Driver-Adapter
+      # verbindet sich zudem erst beim ersten Query, die URL wird also nie
+      # benutzt. Sobald e2e-Tests echte Daten brauchen, gehoert hier ein
+      # postgres-Service-Container hin, kein Zugang zur Supabase-Instanz.
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
     steps:
       - uses: actions/checkout@v5
         with:
