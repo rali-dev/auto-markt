@@ -52,6 +52,7 @@
     "libs/backend/shared/*"
   ],
   "dependencies": {
+    "@apollo/server": "^5.5.1",
     "@nestjs/common": "^11.0.0",
     "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.0.0",
