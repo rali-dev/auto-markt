@@ -1,3 +1,11 @@
 {
-  "singleQuote": true
+  "singleQuote": true,
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "tailwindStylesheet": "./apps/auto-markt/src/styles.css",
+  "overrides": [
+    {
+      "files": ["apps/auto-markt/src/app/**/*.html", "libs/frontend/**/*.html"],
+      "options": { "parser": "angular" }
+    }
+  ]
 }

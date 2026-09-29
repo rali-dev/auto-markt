@@ -11,6 +11,12 @@
     },
     {
       "path": "./libs/backend/shared/database"
+    },
+    {
+      "path": "./apps/auto-markt-e2e"
+    },
+    {
+      "path": "./apps/auto-markt"
     }
   ],
   "compilerOptions": {}

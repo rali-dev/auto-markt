@@ -1,0 +1,8 @@
+{
+  "name": "@org/auto-markt-e2e",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "name": "auto-markt-e2e"
+  }
+}

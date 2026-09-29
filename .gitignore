@@ -57,3 +57,5 @@ test-output
 
 # prisma generated client (wird aus schema.prisma erzeugt)
 libs/backend/shared/database/src/generated
+
+.angular

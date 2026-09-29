@@ -1,0 +1,148 @@
+/*
+ * Globales Stylesheet von auto-markt -- Theme, Schriften und globale Regeln.
+ *
+ * Regeln:
+ * - Templates nutzen Tailwind-Utilities und daisyUI-Komponentenklassen
+ *   (btn, card, badge ...). Kein SCSS.
+ * - Jede Komponente hat ihr eigenes .css (Generator-Default in nx.json) fuer
+ *   Styles, die nur sie betreffen. Farben, Radien und Schriften dort nicht
+ *   hart codieren, sondern die Variablen verwenden: var(--color-primary),
+ *   var(--color-base-200), var(--font-display) ...
+ * - Wer im Komponenten-CSS @apply braucht, muss als erste Zeile den relativen
+ *   Pfad zu dieser Datei referenzieren, z. B.
+ *   @reference '../../../styles.css';
+ *   Das erzeugt kein zusaetzliches CSS, macht aber Theme und Klassen bekannt.
+ *   @apply nur mit Utilities (font-display, text-primary ...), nie mit
+ *   daisyUI-Komponenten: @apply btn kopiert die ganze Komponente (~3,7 kB) ins
+ *   Komponenten-CSS und sprengt das 4-kB-Budget. btn, card ... ins Template.
+ * - Farben nur im daisyUI-Theme 'automarkt' unten pflegen. Daraus entstehen die
+ *   Utilities (bg-primary, bg-base-200, text-base-content ...) und die Farben
+ *   der daisyUI-Komponenten (btn-primary, alert-error ...).
+ * - @theme nur fuer Schriften und Farben, die daisyUI nicht kennt (border, muted).
+ * - @layer components hier nur fuer Muster, die mehrere Komponenten teilen.
+ */
+
+/*
+ * source(none) schaltet die automatische Erkennung ab. Die wuerde vom cwd des
+ * Builds aus scannen -- bei Nx der Workspace-Root, also auch Backend, Prisma-Seed
+ * und Specs. Stattdessen explizit nur Frontend-Code scannen. Jede neue
+ * Frontend-Lib unter libs/frontend/ ist damit automatisch abgedeckt.
+ */
+@import 'tailwindcss' source(none);
+@source './';
+@source '../../../libs/frontend';
+
+/*
+ * themes: false -- keine eingebauten daisyUI-Themes, nur 'automarkt'.
+ * Ein eigenes Theme erbt nichts: Jede Variable unten muss gesetzt sein, sonst
+ * fehlt den Komponenten, die sie nutzen, die Farbe bzw. der Radius.
+ * logs: false -- sonst schreibt daisyUI bei jedem Build und Prettier-Lauf
+ * seine Versionszeile in die Konsole.
+ */
+@plugin 'daisyui' {
+  themes: false;
+  logs: false;
+}
+
+@plugin 'daisyui/theme' {
+  name: 'automarkt';
+  default: true;
+  color-scheme: dark;
+
+  /* Flaechen: kuehles Anthrazit (Asphalt bei Nacht), von hinten nach vorne heller */
+  --color-base-100: #0a0c0f;
+  --color-base-200: #12151a;
+  --color-base-300: #1b1f26;
+  --color-base-content: #eceef1;
+
+  /*
+   * Marke: Performance-Orange als Primaerfarbe (CTAs), Eisblau als Akzent
+   * (Telemetrie-Look, Komplementaerfarbe). Orange ist zu hell fuer weisse
+   * Schrift, deshalb dunkler Content (Kontrast 7,6:1).
+   */
+  --color-primary: #ff7a1a;
+  --color-primary-content: #140800;
+  --color-secondary: #2b313b;
+  --color-secondary-content: #eceef1;
+  --color-accent: #27d3f2;
+  --color-accent-content: #03171c;
+  --color-neutral: #050608;
+  --color-neutral-content: #eceef1;
+
+  /* Status: bewusst von Primary/Accent abgesetzt (Warning gelb, Error rosarot, Info blau) */
+  --color-info: #6ea8ff;
+  --color-info-content: #051226;
+  --color-success: #2ecc71;
+  --color-success-content: #03200f;
+  --color-warning: #fcd34d;
+  --color-warning-content: #231a02;
+  --color-error: #ff4d6a;
+  --color-error-content: #2a040b;
+
+  /* Form: Werte des eingebauten Dark-Themes */
+  --radius-selector: 0.5rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
+
+/* Selbst gehostet statt Google-CDN: kein IP-Transfer an Google (DSGVO). */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/inter-latin-variable.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Barlow Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/barlow-condensed-latin-600.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Barlow Condensed';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/barlow-condensed-latin-700.woff2') format('woff2');
+}
+
+/*
+ * static: Tailwind schreibt diese Variablen immer ins CSS, nicht nur wenn ein
+ * Template die passende Utility nutzt. Sonst waere var(--color-muted) in einem
+ * Komponenten-CSS still leer.
+ */
+@theme static {
+  /* Typografie */
+  --font-display: 'Barlow Condensed', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  /* Ergaenzungen, fuer die daisyUI keine Rolle hat */
+  --color-border: #272c35;
+  --color-muted: #8d95a3;
+}
+
+/*
+ * Hintergrund (base-100), Textfarbe (base-content) und color-scheme setzt
+ * daisyUI ueber das Theme selbst auf :root.
+ */
+@layer base {
+  html {
+    font-family: var(--font-body);
+  }
+}
+
+@layer components {
+  /*
+   * Nur fuer Muster, die mehrere Komponenten teilen. Was nur eine Komponente
+   * betrifft, gehoert in deren eigenes .css.
+   */
+}
