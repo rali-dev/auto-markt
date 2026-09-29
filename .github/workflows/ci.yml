@@ -44,6 +44,15 @@ jobs:
 
       - run: npm ci
 
+      # npm ci installiert nur das Paket @playwright/test, nicht die Browser.
+      # Ohne diesen Schritt scheitert auto-markt-e2e:e2e mit "Executable
+      # doesn't exist". Die CI testet nur Chromium (siehe
+      # apps/auto-markt-e2e/playwright.config.mts), und zwar headless. Deshalb
+      # reicht --only-shell (nur chrome-headless-shell, ohne das volle Chromium).
+      # --with-deps holt die Systembibliotheken dazu. Die Version kommt aus
+      # node_modules und passt deshalb immer zur installierten Playwright-Version.
+      - run: npx playwright install --with-deps --only-shell chromium
+
       # Prepend any command with "nx record --" to record its logs to Nx Cloud
       - run: npx nx record -- npx nx format:check --base="remotes/origin/main"
       - run: npx nx run-many -t lint test build typecheck e2e

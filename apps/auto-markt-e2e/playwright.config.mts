@@ -5,6 +5,30 @@ import { workspaceRoot } from '@nx/devkit';
 // For CI, you may want to set BASE_URL to the deployed application.
 const baseURL = process.env['BASE_URL'] || 'http://localhost:4200';
 
+const chromium = {
+  name: 'chromium',
+  use: { ...devices['Desktop Chrome'] },
+};
+
+// In der CI laeuft nur Chromium, weil Firefox und WebKit jeden Lauf um
+// die Browser-Installation verlaengern wuerden (rund 1-2 Minuten).
+// Lokal bleiben alle drei Browser aktiv. GitHub Actions setzt CI=true
+// automatisch. Wer hier Browser ergaenzt, muss sie auch im Schritt
+// "playwright install" in .github/workflows/ci.yml nachziehen.
+const browsers = process.env['CI']
+  ? [chromium]
+  : [
+      chromium,
+      {
+        name: 'firefox',
+        use: { ...devices['Desktop Firefox'] },
+      },
+      {
+        name: 'webkit',
+        use: { ...devices['Desktop Safari'] },
+      },
+    ];
+
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -37,20 +61,7 @@ export default defineConfig({
     cwd: workspaceRoot,
   },
   projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
-
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
+    ...browsers,
 
     // Uncomment for mobile browsers support
     /* {
