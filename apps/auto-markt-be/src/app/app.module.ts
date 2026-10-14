@@ -17,7 +17,15 @@ import { ProductsModule } from './products/products.module';
     PrismaModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'apps/auto-markt-be/dist/schema.gql'),
+      // Das Schema ist der Vertrag mit dem Frontend (GraphQL Codegen liest es).
+      // Es liegt versioniert im Repo statt in dist/: dist/ ist gitignored und
+      // wird von webpack bei jedem Build geleert, Codegen braucht die Datei
+      // aber auch in CI ohne laufendes Backend. So erscheint zudem jede
+      // API-Aenderung im Pull Request als Diff. sortSchema haelt die
+      // Reihenfolge stabil, damit dieser Diff nur echte Aenderungen zeigt.
+      // Die Datei wird bei jedem Start des Backends neu geschrieben.
+      autoSchemaFile: join(process.cwd(), 'apps/auto-markt-be/schema.gql'),
+      sortSchema: true,
     }),
     ProductsModule,
   ],

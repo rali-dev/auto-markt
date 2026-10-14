@@ -1,0 +1,39 @@
+<section class="space-y-6">
+  <h2 class="font-display text-3xl font-bold tracking-wide uppercase">
+    Products
+  </h2>
+
+  @if (store.error(); as error) {
+    <div role="alert" class="alert alert-error">{{ error }}</div>
+  }
+
+  @if (store.isLoading()) {
+    <span
+      role="status"
+      aria-label="Loading products"
+      class="loading loading-lg loading-spinner text-primary"
+    ></span>
+  }
+
+  <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    @for (product of store.products(); track product.id) {
+      <li class="card border border-border bg-base-200">
+        <div class="card-body">
+          <span class="badge badge-outline badge-accent">
+            {{ product.category | titlecase }}
+          </span>
+          <h3 class="card-title">{{ product.name }}</h3>
+          <p class="text-sm text-muted">{{ product.brand }}</p>
+          <p class="line-clamp-3">{{ product.description }}</p>
+          <p class="text-xl font-semibold text-primary">
+            {{ product.price | currency: 'EUR' }}
+          </p>
+        </div>
+      </li>
+    }
+  </ul>
+
+  @if (!store.isLoading() && !store.error() && store.products().length === 0) {
+    <p class="text-muted">No products available.</p>
+  }
+</section>

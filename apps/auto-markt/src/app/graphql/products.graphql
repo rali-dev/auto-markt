@@ -1,0 +1,12 @@
+# Nur die Felder, die die Produktliste anzeigt. Codegen erzeugt daraus
+# GetProductsQuery (Ergebnistyp) und GetProductsDocument (fuer Apollo).
+query GetProducts {
+  products {
+    id
+    name
+    description
+    brand
+    category
+    price
+  }
+}

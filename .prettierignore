@@ -5,3 +5,7 @@
 /.nx/workspace-data
 .nx/self-healing
 .angular
+
+# Schreibt NestJS bei jedem Backend-Start in eigener Formatierung neu (siehe
+# app.module.ts). Prettier wuerde sie umformatieren und format:check scheitern.
+/apps/auto-markt-be/schema.gql

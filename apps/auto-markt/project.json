@@ -6,8 +6,30 @@
   "sourceRoot": "apps/auto-markt/src",
   "tags": [],
   "targets": {
+    "codegen": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/codegen.ts",
+        "{projectRoot}/src/**/*.graphql",
+        "{workspaceRoot}/apps/auto-markt-be/schema.gql",
+        {
+          "externalDependencies": [
+            "@graphql-codegen/cli",
+            "@graphql-codegen/client-preset"
+          ]
+        }
+      ],
+      "outputs": ["{projectRoot}/src/app/graphql/generated"],
+      "options": {
+        "command": "npx graphql-codegen --config codegen.ts",
+        "cwd": "apps/auto-markt"
+      }
+    },
     "build": {
       "executor": "@angular/build:application",
+      "dependsOn": ["...", "codegen"],
+      "inputs": ["...", { "dependentTasksOutputFiles": "**/*.ts" }],
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
@@ -54,6 +76,7 @@
     "serve": {
       "continuous": true,
       "executor": "@angular/build:dev-server",
+      "dependsOn": ["codegen"],
       "defaultConfiguration": "development",
       "configurations": {
         "production": {
@@ -73,6 +96,14 @@
         "staticFilePath": "dist/apps/auto-markt/browser",
         "spa": true
       }
+    },
+    "typecheck": {
+      "dependsOn": ["...", "codegen"],
+      "inputs": ["...", { "dependentTasksOutputFiles": "**/*.ts" }]
+    },
+    "test": {
+      "dependsOn": ["...", "codegen"],
+      "inputs": ["...", { "dependentTasksOutputFiles": "**/*.ts" }]
     }
   }
 }
